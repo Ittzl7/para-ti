@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para la eno bonita</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050210;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            color: #ffffff;
+            pointer-events: none;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8), 0 0 20px rgba(255, 105, 180, 0.5);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay">
+        <h1>Right now, you´re the only thing on my mind 𖹭</h1>
+        <p>Toca o mueve el cursor para mover las estrellas</p>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        // Configuración de partículas (Estrellas)
+        const particles = [];
+        const particleCount = 800;
+        let mouseX = width / 2;
+        let mouseY = height / 2;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = (Math.random() - 0.5) * width * 1.5;
+                this.y = (Math.random() - 0.5) * height * 1.5;
+                this.z = Math.random() * width;
+                this.size = Math.random() * 2 + 1;
+                // Colores románticos: tonos rosa, violeta, celeste y blanco
+                const colors = ['#ff77a9', '#ff3385', '#7b2cbf', '#9d4edd', '#e0aaff', '#ffffff'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                this.z -= 1.5;
+                if (this.z <= 0) {
+                    this.reset();
+                    this.z = width;
+                }
+            }
+
+            draw() {
+                const k = 256 / this.z;
+                const px = this.x * k + width / 2 + (mouseX - width / 2) * 0.05;
+                const py = this.y * k + height / 2 + (mouseY - height / 2) * 0.05;
+
+                if (px >= 0 && px <= width && py >= 0 && py <= height) {
+                    const size = (1 - this.z / width) * 2.5 + 0.5;
+                    ctx.beginPath();
+                    ctx.arc(px, py, size, 0, Math.PI * 2);
+                    ctx.fillStyle = this.color;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = this.color;
+                    ctx.fill();
+                }
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) {
+                mouseX = e.touches[0].clientX;
+                mouseY = e.touches[0].clientY;
+            }
+        });
+
+        function animate() {
+            ctx.fillStyle = 'rgba(5, 2, 16, 0.2)';
+            ctx.fillRect(0, 0, width, height);
+
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
