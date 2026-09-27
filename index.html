@@ -5,142 +5,255 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para la eno bonita</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
             overflow: hidden;
-            background-color: #050210;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #020208;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #ffffff;
         }
-
-        #canvas {
-            position: absolute;
+        #webgl {
+            position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             z-index: 1;
         }
 
-        .overlay {
+        /* Título Principal en el Centro */
+        .main-title {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 2;
+            z-index: 10;
             text-align: center;
-            color: #ffffff;
             pointer-events: none;
-            text-shadow: 0 0 10px rgba(255, 105, 180, 0.8), 0 0 20px rgba(255, 105, 180, 0.5);
         }
-
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
+        .main-title h1 {
+            font-size: 2.3rem;
+            color: #ffffff;
+            text-shadow: 0 0 15px rgba(168, 85, 247, 0.9), 0 0 30px rgba(59, 130, 246, 0.8);
+            margin: 0;
+            font-weight: 600;
             letter-spacing: 2px;
         }
 
-        p {
-            font-size: 1.3rem;
-            opacity: 0.9;
+        /* Tarjetas de Canciones Esparcidas */
+        .song-box {
+            position: absolute;
+            z-index: 10;
+            max-width: 280px;
+            background: rgba(10, 15, 30, 0.65);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 25px rgba(59, 130, 246, 0.2);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .song-box:hover {
+            transform: scale(1.05);
+            border-color: rgba(192, 132, 252, 0.7);
+            box-shadow: 0 6px 30px rgba(168, 85, 247, 0.45);
+        }
+        .song-title {
+            font-size: 0.85rem;
+            color: #c084fc;
+            font-weight: bold;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .lyric {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #f1f5f9;
+            font-style: italic;
+            white-space: pre-line;
+        }
+
+        /* Posiciones específicas en la pantalla */
+        .pos-1 { top: 8%; left: 6%; }         /* Arriba Izquierda */
+        .pos-2 { top: 12%; right: 6%; }       /* Arriba Derecha */
+        .pos-3 { bottom: 12%; left: 8%; }     /* Abajo Izquierda */
+        .pos-4 { bottom: 10%; right: 8%; }    /* Abajo Derecha */
+
+        /* Ajuste para pantallas de celular */
+        @media (max-width: 768px) {
+            .main-title h1 { font-size: 1.6rem; }
+            .song-box { max-width: 220px; padding: 10px 12px; }
+            .lyric { font-size: 0.85rem; }
+            .pos-1 { top: 4%; left: 4%; }
+            .pos-2 { top: 22%; right: 4%; }
+            .pos-3 { bottom: 22%; left: 4%; }
+            .pos-4 { bottom: 4%; right: 4%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="overlay">
-        <h1>Right now, you´re the only thing on my mind 𖹭</h1>
-        <p>Toca o mueve el cursor para mover las estrellas</p>
+    <div id="webgl"></div>
+
+    <!-- Título Central -->
+    <div class="main-title">
+        <h1>ℳ𝒾𝓁𝒶</h1>
     </div>
 
-    <canvas id="canvas"></canvas>
+    <!-- Canción 1: Arriba a la Izquierda -->
+    <div class="song-box pos-1">
+        <div class="song-title">Teen Romance</div>
+        <div class="lyric">
+"Let me guide you
+to a place where
+no one hurts you"
+        </div>
+    </div>
 
+    <!-- Canción 2: Arriba a la Derecha -->
+    <div class="song-box pos-2">
+        <div class="song-title">Big City Blues</div>
+        <div class="lyric">
+"And I just wanna see you shine
+girl, you got stars for eyes (you do)
+and she sweet like Texas tea"
+        </div>
+    </div>
+
+    <!-- Canción 3: Abajo a la Izquierda -->
+    <div class="song-box pos-3">
+        <div class="song-title">Feelz</div>
+        <div class="lyric">
+"They say home is where the heart is
+You're the reason mine is beatin'"
+        </div>
+    </div>
+
+    <!-- Canción 4: Abajo a la Derecha -->
+    <div class="song-box pos-4">
+        <div class="song-title">Star Shopping</div>
+        <div class="lyric">
+"But to me, girl, you're so much more than gorgeous (yeah)
+So much more than perfect (yeah)
+Right now, I know that I'm not really worth it
+but, if you give me time, I could work on it"
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.x = 2;
+        camera.position.y = 2;
+        camera.position.z = 4.5;
+        scene.add(camera);
 
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.getElementById('webgl').appendChild(renderer.domElement);
+
+        const parameters = {
+            count: 50000,
+            size: 0.012,
+            radius: 5,
+            branches: 3,
+            spin: 1,
+            randomness: 0.6,
+            power: 3,
+            insideColor: '#1d4ed8',
+            outsideColor: '#a855f7'
+        };
+
+        let geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(parameters.count * 3);
+        const colors = new Float32Array(parameters.count * 3);
+
+        const colorInside = new THREE.Color(parameters.insideColor);
+        const colorOutside = new THREE.Color(parameters.outsideColor);
+
+        for (let i = 0; i < parameters.count; i++) {
+            const i3 = i * 3;
+            const radius = Math.random() * parameters.radius;
+            const spinAngle = radius * parameters.spin;
+            const branchAngle = ((i % parameters.branches) / parameters.branches) * Math.PI * 2;
+
+            const randomX = Math.pow(Math.random(), parameters.power) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+            const randomY = Math.pow(Math.random(), parameters.power) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+            const randomZ = Math.pow(Math.random(), parameters.power) * (Math.random() < 0.5 ? 1 : -1) * parameters.randomness * radius;
+
+            positions[i3] = Math.cos(branchAngle + spinAngle) * radius + randomX;
+            positions[i3 + 1] = randomY;
+            positions[i3 + 2] = Math.sin(branchAngle + spinAngle) * radius + randomZ;
+
+            const mixedColor = colorInside.clone();
+            mixedColor.lerp(colorOutside, radius / parameters.radius);
+
+            colors[i3] = mixedColor.r;
+            colors[i3 + 1] = mixedColor.g;
+            colors[i3 + 2] = mixedColor.b;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({
+            size: parameters.size,
+            sizeAttenuation: true,
+            depthWrite: false,
+            blending: THREE.AdditiveBlending,
+            vertexColors: true
+        });
+
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        window.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth - 0.5);
+            mouseY = (event.clientY / window.innerHeight - 0.5);
+        });
+
+        window.addEventListener('touchmove', (event) => {
+            if (event.touches.length > 0) {
+                mouseX = (event.touches[0].clientX / window.innerWidth - 0.5);
+                mouseY = (event.touches[0].clientY / window.innerHeight - 0.5);
+            }
+        });
 
         window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
-        // Configuración de partículas (Estrellas)
-        const particles = [];
-        const particleCount = 800;
-        let mouseX = width / 2;
-        let mouseY = height / 2;
+        const clock = new THREE.Clock();
 
-        class Particle {
-            constructor() {
-                this.reset();
-            }
+        const tick = () => {
+            const elapsedTime = clock.getElapsedTime();
 
-            reset() {
-                this.x = (Math.random() - 0.5) * width * 1.5;
-                this.y = (Math.random() - 0.5) * height * 1.5;
-                this.z = Math.random() * width;
-                this.size = Math.random() * 2 + 1;
-                // Colores románticos: tonos rosa, violeta, celeste y blanco
-                const colors = ['#ff77a9', '#ff3385', '#7b2cbf', '#9d4edd', '#e0aaff', '#ffffff'];
-                this.color = colors[Math.floor(Math.random() * colors.length)];
-            }
+            points.rotation.y = elapsedTime * 0.08;
 
-            update() {
-                this.z -= 1.5;
-                if (this.z <= 0) {
-                    this.reset();
-                    this.z = width;
-                }
-            }
+            camera.position.x += (mouseX * 2.5 - camera.position.x) * 0.04;
+            camera.position.y += (-mouseY * 2.5 - camera.position.y) * 0.04;
+            camera.lookAt(scene.position);
 
-            draw() {
-                const k = 256 / this.z;
-                const px = this.x * k + width / 2 + (mouseX - width / 2) * 0.05;
-                const py = this.y * k + height / 2 + (mouseY - height / 2) * 0.05;
+            renderer.render(scene, camera);
+            window.requestAnimationFrame(tick);
+        };
 
-                if (px >= 0 && px <= width && py >= 0 && py <= height) {
-                    const size = (1 - this.z / width) * 2.5 + 0.5;
-                    ctx.beginPath();
-                    ctx.arc(px, py, size, 0, Math.PI * 2);
-                    ctx.fillStyle = this.color;
-                    ctx.shadowBlur = 8;
-                    ctx.shadowColor = this.color;
-                    ctx.fill();
-                }
-            }
-        }
-
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        window.addEventListener('touchmove', (e) => {
-            if (e.touches.length > 0) {
-                mouseX = e.touches[0].clientX;
-                mouseY = e.touches[0].clientY;
-            }
-        });
-
-        function animate() {
-            ctx.fillStyle = 'rgba(5, 2, 16, 0.2)';
-            ctx.fillRect(0, 0, width, height);
-
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        animate();
+        tick();
     </script>
 </body>
 </html>
