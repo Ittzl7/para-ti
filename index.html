@@ -10,7 +10,7 @@
         }
         body {
             margin: 0;
-            overflow: hidden;
+            overflow-x: hidden;
             background-color: #020208;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             color: #ffffff;
@@ -24,7 +24,7 @@
             z-index: 1;
         }
 
-        /* Título Principal en el Centro */
+        /* Título Principal en el Centro (Computadora) */
         .main-title {
             position: absolute;
             top: 50%;
@@ -33,9 +33,10 @@
             z-index: 10;
             text-align: center;
             pointer-events: none;
+            width: 90%;
         }
         .main-title h1 {
-            font-size: 2.3rem;
+            font-size: 3rem;
             color: #ffffff;
             text-shadow: 0 0 15px rgba(168, 85, 247, 0.9), 0 0 30px rgba(59, 130, 246, 0.8);
             margin: 0;
@@ -81,21 +82,51 @@
             white-space: pre-line;
         }
 
-        /* Posiciones específicas en la pantalla */
+        /* Posiciones específicas para pantallas de Computadora */
         .pos-1 { top: 8%; left: 6%; }         /* Arriba Izquierda */
         .pos-2 { top: 12%; right: 6%; }       /* Arriba Derecha */
         .pos-3 { bottom: 12%; left: 8%; }     /* Abajo Izquierda */
         .pos-4 { bottom: 10%; right: 8%; }    /* Abajo Derecha */
 
-        /* Ajuste para pantallas de celular */
+        /* Contenedor especial para vista Celular */
+        .mobile-container {
+            display: none;
+        }
+
+        /* DISEÑO RESPONSIVO PARA CELULARES */
         @media (max-width: 768px) {
-            .main-title h1 { font-size: 1.6rem; }
-            .song-box { max-width: 220px; padding: 10px 12px; }
-            .lyric { font-size: 0.85rem; }
-            .pos-1 { top: 4%; left: 4%; }
-            .pos-2 { top: 22%; right: 4%; }
-            .pos-3 { bottom: 22%; left: 4%; }
-            .pos-4 { bottom: 4%; right: 4%; }
+            body {
+                overflow-y: auto; /* Permitir scroll vertical en celular */
+            }
+            .main-title, .pos-1, .pos-2, .pos-3, .pos-4 {
+                display: none; /* Ocultar posiciones flotantes de pc */
+            }
+            .mobile-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+                z-index: 10;
+                padding: 40px 20px 60px 20px;
+                gap: 20px;
+                width: 100%;
+            }
+            .mobile-title h1 {
+                font-size: 2.5rem;
+                color: #ffffff;
+                text-shadow: 0 0 15px rgba(168, 85, 247, 0.9), 0 0 30px rgba(59, 130, 246, 0.8);
+                margin-bottom: 10px;
+                text-align: center;
+            }
+            .mobile-container .song-box {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                bottom: auto;
+                width: 100%;
+                max-width: 320px;
+            }
         }
     </style>
 </head>
@@ -103,14 +134,13 @@
 
     <div id="webgl"></div>
 
-    <!-- Título Central -->
+    <!-- VISTA COMPUTADORA -->
     <div class="main-title">
         <h1>ℳ𝒾𝓁𝒶</h1>
     </div>
 
-    <!-- Canción 1: Arriba a la Izquierda -->
     <div class="song-box pos-1">
-        <div class="song-title">Teen Romance</div>
+        <div class="song-title">🎵 Teen Romance</div>
         <div class="lyric">
 "Let me guide you
 to a place where
@@ -118,9 +148,8 @@ no one hurts you"
         </div>
     </div>
 
-    <!-- Canción 2: Arriba a la Derecha -->
     <div class="song-box pos-2">
-        <div class="song-title">Big City Blues</div>
+        <div class="song-title">🎵 Big City Blues</div>
         <div class="lyric">
 "And I just wanna see you shine
 girl, you got stars for eyes (you do)
@@ -128,23 +157,64 @@ and she sweet like Texas tea"
         </div>
     </div>
 
-    <!-- Canción 3: Abajo a la Izquierda -->
     <div class="song-box pos-3">
-        <div class="song-title">Feelz</div>
+        <div class="song-title">🎵 Feelz</div>
         <div class="lyric">
 "They say home is where the heart is
 You're the reason mine is beatin'"
         </div>
     </div>
 
-    <!-- Canción 4: Abajo a la Derecha -->
     <div class="song-box pos-4">
-        <div class="song-title">Star Shopping</div>
+        <div class="song-title">🎵 Star Shopping</div>
         <div class="lyric">
 "But to me, girl, you're so much more than gorgeous (yeah)
 So much more than perfect (yeah)
 Right now, I know that I'm not really worth it
 but, if you give me time, I could work on it"
+        </div>
+    </div>
+
+    <!-- VISTA CELULAR (Acomodado verticalmente sin encimarse) -->
+    <div class="mobile-container">
+        <div class="mobile-title">
+            <h1>ℳ𝒾𝓁𝒶</h1>
+        </div>
+
+        <div class="song-box">
+            <div class="song-title">🎵 Teen Romance</div>
+            <div class="lyric">
+"Let me guide you
+to a place where
+no one hurts you"
+            </div>
+        </div>
+
+        <div class="song-box">
+            <div class="song-title">🎵 Big City Blues</div>
+            <div class="lyric">
+"And I just wanna see you shine
+girl, you got stars for eyes (you do)
+and she sweet like Texas tea"
+            </div>
+        </div>
+
+        <div class="song-box">
+            <div class="song-title">🎵 Feelz</div>
+            <div class="lyric">
+"They say home is where the heart is
+You're the reason mine is beatin'"
+            </div>
+        </div>
+
+        <div class="song-box">
+            <div class="song-title">🎵 Star Shopping</div>
+            <div class="lyric">
+"But to me, girl, you're so much more than gorgeous (yeah)
+So much more than perfect (yeah)
+Right now, I know that I'm not really worth it
+but, if you give me time, I could work on it"
+            </div>
         </div>
     </div>
 
